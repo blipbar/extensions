@@ -1,7 +1,7 @@
 name: Check entries
+# Every pull request, so it can be a required check; one that changes no entry passes at once.
 on:
   pull_request:
-    paths: ["extensions/**"]
 permissions:
   contents: read
 jobs:
@@ -17,4 +17,5 @@ jobs:
       - name: Check the changed entries
         run: |
           files=$(git diff --name-only --diff-filter=AM "origin/${{ github.base_ref }}...HEAD" -- 'extensions/*.json')
+          if [ -z "$files" ]; then echo "No entries changed."; exit 0; fi
           node scripts/check.mjs "origin/${{ github.base_ref }}" $files

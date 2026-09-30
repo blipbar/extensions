@@ -4,8 +4,10 @@ on:
     branches: [main]
     paths: ["extensions/**", "scripts/**"]
   workflow_dispatch:
+# It pushes catalog.json with the CATALOG_DEPLOY_KEY deploy key, the one thing main's ruleset
+# lets past its pull request rule; the workflow's own token only reads.
 permissions:
-  contents: write
+  contents: read
 concurrency:
   group: catalog
   cancel-in-progress: false
@@ -16,6 +18,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          ssh-key: ${{ secrets.CATALOG_DEPLOY_KEY }}
       - uses: actions/setup-node@v4
         with:
           node-version: 22
